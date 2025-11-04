@@ -1,0 +1,21 @@
+# Unity
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Mm]emoryCaptures/
+UserSettings/
+
+# IDE
+*.csproj
+*.sln
+*.user
+*.userprefs
+*.pidb
+*.svd
+*.suo
+
+# Packages
+Packages/com.unity.ide.rider/**/EditorInstance.json
