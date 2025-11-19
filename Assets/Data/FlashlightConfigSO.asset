@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: FlashlightConfigSO
   m_EditorClassIdentifier: 
   maxEnergy: 100
-  drainPerSecond: 6
+  drainPerSecond: 4
   rechargePerSecond: 15
-  spotAngle: 60
-  range: 15
-  intensity: 8000
+  spotAngle: 70
+  range: 25
+  intensity: 150

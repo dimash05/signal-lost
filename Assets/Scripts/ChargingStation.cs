@@ -11,13 +11,13 @@ public class ChargingStation : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        var flash = other.GetComponentInChildren<PlayerFlashlight>();
+        var flash = other.GetComponentInParent<PlayerFlashlight>() ?? other.GetComponentInChildren<PlayerFlashlight>();
         if (flash) flash.SetCharging(true);
     }
 
     void OnTriggerExit(Collider other)
     {
-        var flash = other.GetComponentInChildren<PlayerFlashlight>();
+        var flash = other.GetComponentInParent<PlayerFlashlight>() ?? other.GetComponentInChildren<PlayerFlashlight>();
         if (flash) flash.SetCharging(false);
     }
 }

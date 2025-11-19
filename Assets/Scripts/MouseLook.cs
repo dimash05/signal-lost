@@ -2,16 +2,27 @@ using UnityEngine;
 
 public class MouseLook : MonoBehaviour
 {
-    [SerializeField] Transform playerBody; 
-    [SerializeField] Transform playerCamera;
-    [SerializeField] float sensitivity = 120f;
-    [SerializeField] float minPitch = -70f;
-    [SerializeField] float maxPitch = 80f;
+    [SerializeField] private Transform playerBody;   
+    [SerializeField] private Transform playerCamera;  
+    [SerializeField] private float sensitivity = 120f;
+    [SerializeField] private float minPitch = -70f;
+    [SerializeField] private float maxPitch = 80f;
 
-    float pitch;
+    private float pitch;
+
+    void Awake()
+    {
+        if (!playerBody)  playerBody  = transform;
+        if (!playerCamera)
+        {
+            var cam = Camera.main ? Camera.main.transform : GetComponentInChildren<Camera>()?.transform;
+            if (cam) playerCamera = cam;
+        }
+    }
 
     void Start()
     {
+        if (playerCamera) pitch = playerCamera.localEulerAngles.x;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -21,10 +32,15 @@ public class MouseLook : MonoBehaviour
         float mouseX = Input.GetAxis("Mouse X") * sensitivity * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * sensitivity * Time.deltaTime;
 
-        playerBody.Rotate(Vector3.up * mouseX);
+        if (playerBody) playerBody.Rotate(Vector3.up, mouseX);
 
-        pitch -= mouseY;
-        pitch = Mathf.Clamp(pitch, minPitch, maxPitch);
-        playerCamera.localEulerAngles = new Vector3(pitch, 0f, 0f);
+        if (playerCamera)
+        {
+            pitch -= mouseY;
+            pitch = Mathf.Clamp(pitch, minPitch, maxPitch);
+            var e = playerCamera.localEulerAngles;
+            e.x = pitch; e.y = 0f; e.z = 0f;
+            playerCamera.localEulerAngles = e;
+        }
     }
 }

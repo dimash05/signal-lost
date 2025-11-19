@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "SignalLost/Flashlight Config SO", fileName = "FlashlightConfigSO")]
+[CreateAssetMenu(menuName = "SignalLost/Flashlight Config", fileName = "FlashlightConfig")]
 public class FlashlightConfigSO : ScriptableObject
 {
     [Header("Energy")]
