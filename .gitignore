@@ -19,3 +19,8 @@ UserSettings/
 
 # Packages
 Packages/com.unity.ide.rider/**/EditorInstance.json
+Build/
+Builds/
+[Bb]uild/
+[Bb]uilds/
+*.zip
