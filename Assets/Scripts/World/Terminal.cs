@@ -2,39 +2,23 @@ using UnityEngine;
 
 public class Terminal : MonoBehaviour, IInteractable
 {
-    [SerializeField] private Renderer screen;     
-    [SerializeField] private Color offColor = Color.black;
-    [SerializeField] private Color onColor  = Color.green;
-    [SerializeField] private AudioSource au;
-    [SerializeField] private AudioClip activateBeep;
+    [SerializeField] private string prompt = "Activate terminal (E)";
+    [SerializeField] private bool startActivated = false;
 
-    private bool active;
+    public bool IsActivated { get; private set; }
+    public string Prompt => IsActivated ? string.Empty : prompt;
 
-    void Start()
+    private void Awake()
     {
-        if (screen && screen.material.HasProperty("_EmissionColor"))
-        {
-            var m = screen.material;
-            m.EnableKeyword("_EMISSION");
-            m.SetColor("_EmissionColor", offColor);
-        }
+        IsActivated = startActivated;
     }
 
-    public string GetPrompt() => active ? "Terminal activated" : "Activate terminal";
-
-    public void Interact()
+    public void Interact(PlayerInteractor interactor)
     {
-        if (active) return;
-        active = true;
+        if (IsActivated) return;
 
-        if (screen && screen.material.HasProperty("_EmissionColor"))
-        {
-            var m = screen.material;
-            m.EnableKeyword("_EMISSION");
-            m.SetColor("_EmissionColor", onColor);
-        }
-
-        if (au && activateBeep) au.PlayOneShot(activateBeep, 0.85f);
-        ObjectiveManager.Instance?.OnTerminalActivated();
+        IsActivated = true;
+        UIController.Instance?.HidePrompt();
+        ObjectiveManager.Instance?.NotifyTerminalActivated(this);
     }
 }

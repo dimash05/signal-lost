@@ -1,25 +1,18 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 public class DoorInteractable : MonoBehaviour, IInteractable
 {
-    [SerializeField] DoorAnimator door;
-    [SerializeField] bool requireAllTerminals = true;
+    [Header("UI")]
+    [SerializeField] private string prompt = "Open door (E)";
 
-    bool Unlocked =>
-        !requireAllTerminals ||
-        (ObjectiveManager.Instance != null && ObjectiveManager.Instance.Completed);
+    [Header("Events")]
+    public UnityEvent onInteract;
 
-    void Reset() => door = GetComponent<DoorAnimator>();
+    public string Prompt => prompt;
 
-    public string GetPrompt()
+    public void Interact(PlayerInteractor interactor)
     {
-        if (!Unlocked) return "Door is closed. Activate all terminals";
-        return door != null && door.IsOpen ? "E — Close the door" : "E — Open the door";
-    }
-
-    public void Interact()
-    {
-        if (!Unlocked || door == null) return;
-        door.Toggle();
+        onInteract?.Invoke();
     }
 }

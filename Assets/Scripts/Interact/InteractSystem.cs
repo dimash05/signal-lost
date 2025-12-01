@@ -1,36 +1,76 @@
 using UnityEngine;
+using TMPro;
 
-public class InteractSystem : MonoBehaviour
+public class PlayerInteractor : MonoBehaviour
 {
-    [SerializeField] private Camera cam;
-    [SerializeField] private float distance = 3f;
-    [SerializeField] private LayerMask mask = ~0; 
+    [Header("Refs")]
+    [Tooltip("Transforms the player's CAMERA - it emits a beam for targeting.")]
+    public Transform playerCamera;
 
-    private IInteractable current;
+    [Header("Raycast")]
+    [SerializeField] private float maxDistance = 3f;
+    [SerializeField] private LayerMask interactMask = ~0; 
 
-    void Awake()
+    [Header("UI (optional)")]
+    [SerializeField] private TMP_Text promptText;     
+    [SerializeField] private GameObject promptRoot;   
+    [SerializeField] private KeyCode interactKey = KeyCode.E;
+
+    private IInteractable _hover;
+
+    private void Awake()
     {
-        if (!cam) cam = Camera.main;
+        if (promptRoot != null) promptRoot.SetActive(false);
     }
 
-    void Update()
+    private void Update()
     {
-        IInteractable found = null;
+        UpdateHover();
 
-        var ray = new Ray(cam.transform.position, cam.transform.forward);
-        if (Physics.Raycast(ray, out var hit, distance, mask, QueryTriggerInteraction.Ignore))
+        if (_hover != null && Input.GetKeyDown(interactKey))
         {
-            found = hit.collider.GetComponent<IInteractable>() ??
-                    hit.collider.GetComponentInParent<IInteractable>();
+            _hover.Interact(this);
+        }
+    }
+
+    private void UpdateHover()
+    {
+        IInteractable newTarget = null;
+
+        if (playerCamera != null)
+        {
+            if (Physics.Raycast(playerCamera.position, playerCamera.forward,
+                                out RaycastHit hit, maxDistance, interactMask,
+                                QueryTriggerInteraction.Collide))
+            {
+                newTarget = hit.collider.GetComponentInParent<IInteractable>()
+                            ?? hit.collider.GetComponent<IInteractable>();
+            }
         }
 
-        if (found != current)
+        if (!ReferenceEquals(newTarget, _hover))
         {
-            current = found;
-            UIController.Instance?.SetPrompt(current != null ? "[E] " + current.GetPrompt() : "");
+            _hover = newTarget;
+            UpdatePrompt();
+        }
+    }
+
+    private void UpdatePrompt()
+    {
+        if (promptRoot == null && promptText == null) return;
+
+        if (_hover == null)
+        {
+            if (promptRoot != null) promptRoot.SetActive(false);
+            if (promptText != null) promptText.text = string.Empty;
+            return;
         }
 
-        if (current != null && Input.GetKeyDown(KeyCode.E))
-            current.Interact();
+        if (promptRoot != null) promptRoot.SetActive(true);
+        if (promptText != null)
+        {
+            var key = interactKey.ToString();
+            promptText.text = $"{key}: {_hover.Prompt}";
+        }
     }
 }

@@ -1,55 +1,58 @@
 using UnityEngine;
 
+/// <summary>
+
+/// </summary>
 public class CompassArrow : MonoBehaviour
 {
-    [SerializeField] Transform playerCamera;
-    [SerializeField] Transform target;
-    [SerializeField] RectTransform arrow;
+    [Header("References")]
+    [Tooltip("Compass target provider. If not specified, one will be found automatically..")]
+    public CompassTargetProvider provider;
 
-    [SerializeField] bool hideWhenClose = true;
-    [SerializeField] float closeDistance = 2f;
+    [Tooltip("Player/direction anchor. Default = provider transform.")]
+    public Transform player;
 
-    [Header("Orientation")]
-    [SerializeField] float spriteUpOffset = 180f;
-    [SerializeField] bool mirrorLeftRight = false;
+    [Tooltip("RectTransform the arrow itself. If it's empty, we'll take our own.")]
+    public RectTransform arrow;
 
-    void Reset()
-    {
-        arrow = GetComponent<RectTransform>();
-    }
+    [Header("Tuning")]
+    [Tooltip("Turn smoothing (the higher the smoother).")]
+    public float smooth = 12f;
+
+    [Tooltip("Sprite offset in degrees. If the sprite is facing DOWN, set 180.")]
+    public float spriteForwardOffset = 0f;
+
+    [Tooltip("Hide the arrow when there is no target.")]
+    public bool hideWhenNoTarget = true;
 
     void Awake()
     {
-        if (!arrow) arrow = GetComponent<RectTransform>();
+        if (!provider) provider = FindObjectOfType<CompassTargetProvider>(true);
+        if (!player && provider) player = provider.transform;
+        if (!arrow) arrow = transform as RectTransform;
     }
 
-    void Update()
+    void LateUpdate()
     {
-        if (!playerCamera || !target || !arrow) return;
+        var target = provider ? provider.CurrentTarget : null;
+        bool hasTarget = (target && player && arrow);
 
-        Vector3 camFwd = playerCamera.forward; camFwd.y = 0f;
-        if (camFwd.sqrMagnitude < 1e-6f) camFwd = Vector3.forward;
-        camFwd.Normalize();
+        if (hideWhenNoTarget) arrow.gameObject.SetActive(hasTarget);
+        if (!hasTarget) return;
 
-        Vector3 toTgt = target.position - playerCamera.position; toTgt.y = 0f;
-        float dist = toTgt.magnitude;
+        Vector3 toTarget = target.position - player.position;
+        toTarget.y = 0f;
+        if (toTarget.sqrMagnitude < 0.0001f) return;
 
-        if (hideWhenClose && dist < closeDistance)
-        {
-            if (arrow.gameObject.activeSelf) arrow.gameObject.SetActive(false);
-            return;
-        }
-        if (!arrow.gameObject.activeSelf) arrow.gameObject.SetActive(true);
+        Vector3 fwd = player.forward; 
+        fwd.y = 0f;
+        if (fwd.sqrMagnitude < 0.0001f) fwd = Vector3.forward;
 
-        if (dist > 0.001f)
-        {
-            toTgt.Normalize();
-            float signed = Vector3.SignedAngle(camFwd, toTgt, Vector3.up);
-            if (mirrorLeftRight) signed = -signed;
-            arrow.localRotation = Quaternion.Euler(0f, 0f, spriteUpOffset - signed);
-        }
+        float angle = Vector3.SignedAngle(fwd, toTarget, Vector3.up);
+
+        float targetZ = -angle + spriteForwardOffset;
+
+        float z = Mathf.LerpAngle(arrow.localEulerAngles.z, targetZ, Time.deltaTime * smooth);
+        arrow.localEulerAngles = new Vector3(0f, 0f, z);
     }
-
-    public void SetTarget(Transform t) => target = t;
-    public void SetCamera(Transform cam) => playerCamera = cam;
 }

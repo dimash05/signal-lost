@@ -1,98 +1,67 @@
 using UnityEngine;
-using Unity.Cinemachine;
 
 public class PlayerFlashlight : MonoBehaviour
 {
-    [SerializeField] private FlashlightConfigSO config;
+    [Header("Refs")]
     [SerializeField] private Light flashlight;
     [SerializeField] private KeyCode toggleKey = KeyCode.F;
 
-    [Header("Low battery shake")]
-    [SerializeField] private CinemachineImpulseSource impulse;
-    [SerializeField] private float lowThreshold = 0.15f;
+    [Header("Battery")]
+    [SerializeField] private float capacity = 150f;     
+    [SerializeField] private float drainPerSecond = 1.0f;
+    [SerializeField] private float rechargePerSecond = 10f;
 
-    [Header("Close-up dimming")]
-    [SerializeField] private Transform rayOrigin;     
-    [SerializeField] private float falloffStart = 0.9f;     
-    [SerializeField] private float falloffEnd   = 0.25f;     
-    [SerializeField, Range(0f,1f)] private float minCloseMultiplier = 0.25f; 
-    [SerializeField] private LayerMask falloffMask = ~0;     
-
-    float baseIntensity;
-    float energy;
+    float energy; 
     bool isCharging;
-    float shakeCooldown;
 
-    public float Battery01 => config ? Mathf.Clamp01(energy / config.maxEnergy) : 1f;
+    public float Battery01 => Mathf.Clamp01(energy / Mathf.Max(1f, capacity));
+    public bool IsOn => flashlight && flashlight.enabled;
 
     void Start()
     {
-        if (!config) Debug.LogWarning("PlayerFlashlight: assign FlashlightConfigSO.");
-        if (flashlight && config)
-        {
-            flashlight.spotAngle = config.spotAngle;
-            flashlight.range     = config.range;
-            flashlight.intensity = config.intensity;
-            flashlight.enabled   = false;
-        }
-        baseIntensity = flashlight ? flashlight.intensity : (config ? config.intensity : 1000f);
-        energy = config ? config.maxEnergy : 100f;
-        UpdateUI();
-        if (!rayOrigin && flashlight) rayOrigin = flashlight.transform;
+        if (!flashlight) flashlight = GetComponentInChildren<Light>(true);
+        energy = capacity;
+        UIController.Instance?.SetBattery(Battery01);
+        ApplyIntensity();
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(toggleKey) && flashlight && energy > 0f)
-            flashlight.enabled = !flashlight.enabled;
+        if (Input.GetKeyDown(toggleKey))
+            Toggle();
 
-        if (flashlight && flashlight.enabled && config)
+        if (IsOn && !isCharging)
         {
-            energy -= config.drainPerSecond * Time.deltaTime;
-            if (energy <= 0f) { energy = 0f; flashlight.enabled = false; }
-            UpdateUI();
+            energy = Mathf.Max(0f, energy - drainPerSecond * Time.deltaTime);
+            if (energy <= 0f) flashlight.enabled = false;
         }
 
-        if (config && Battery01 <= lowThreshold)
-        {
-            shakeCooldown -= Time.deltaTime;
-            if (shakeCooldown <= 0f && impulse != null)
-            {
-                impulse.GenerateImpulse();
-                shakeCooldown = 1.5f;
-            }
-        }
+        if (isCharging)
+            AddEnergy(rechargePerSecond * Time.deltaTime);
 
-        
-        if (isCharging && config && energy < config.maxEnergy)
-        {
-            energy = Mathf.Min(config.maxEnergy, energy + config.rechargePerSecond * Time.deltaTime);
-            UpdateUI();
-        }
-
-        ApplyCloseUpDimming();
+        UIController.Instance?.SetBattery(Battery01);
+        ApplyIntensity();
     }
 
-    void ApplyCloseUpDimming()
+    public void SetCharging(bool value) => isCharging = value;
+
+    public void AddEnergy01(float amount) => AddEnergy(amount);
+    public void AddEnergy(float amount)
     {
-        if (!flashlight || !flashlight.enabled) return;
-
-        Transform o = rayOrigin ? rayOrigin : flashlight.transform;
-        float mul = 1f;
-
-        if (Physics.Raycast(o.position, o.forward, out var hit, falloffStart, falloffMask, QueryTriggerInteraction.Ignore))
-        {
-            float t = Mathf.InverseLerp(falloffStart, falloffEnd, hit.distance); 
-            mul = Mathf.Lerp(1f, minCloseMultiplier, t);
-        }
-
-        flashlight.intensity = baseIntensity * mul;
+        energy = Mathf.Clamp(energy + amount, 0f, capacity);
     }
 
-    public void SetCharging(bool v) => isCharging = v;
-
-    void UpdateUI()
+    void Toggle()
     {
-        if (config) UIController.Instance?.SetBattery01(Battery01);
+        if (!flashlight) return;
+        if (energy <= 0f) return;
+        flashlight.enabled = !flashlight.enabled;
+    }
+
+    void ApplyIntensity()
+    {
+        if (!flashlight) return;
+        flashlight.intensity = Mathf.Lerp(0.25f, 1.0f, Battery01);
+        flashlight.range     = Mathf.Lerp(5f, 18f, Battery01);
     }
 }

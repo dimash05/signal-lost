@@ -90,7 +90,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6182509869403012149, guid: f6008182cadd0874c9cfcbfb0049505b,
         type: 3}
-      propertyPath: m_Materials.Array.data[1]
+      propertyPath: 'm_Materials.Array.data[1]'
       value: 
       objectReference: {fileID: 2100000, guid: 825bec9378b367144bdd8b1bd7d91292, type: 2}
     - target: {fileID: 7178600532266133720, guid: f6008182cadd0874c9cfcbfb0049505b,
@@ -111,12 +111,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1966270950502525764}
   m_SourcePrefab: {fileID: 100100000, guid: f6008182cadd0874c9cfcbfb0049505b, type: 3}
---- !u!23 &1250833725201243834 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 186092406105996549, guid: f6008182cadd0874c9cfcbfb0049505b,
-    type: 3}
-  m_PrefabInstance: {fileID: 1427351549120259007}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &6702107364882513503 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5678005075880140256, guid: f6008182cadd0874c9cfcbfb0049505b,
@@ -135,11 +129,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68a6819b3537bf147a316dd14a05592b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  screen: {fileID: 1250833725201243834}
-  offColor: {r: 0, g: 0, b: 0, a: 1}
-  onColor: {r: 0, g: 1, b: 0, a: 1}
-  au: {fileID: 1966270950502525764}
-  activateBeep: {fileID: 8300000, guid: 1d25f6a2b799a694a90ed9833ff690dd, type: 3}
+  promptInactive: "\u0410\u043A\u0442\u0438\u0432\u0438\u0440\u043E\u0432\u0430\u0442\u044C
+    \u0442\u0435\u0440\u043C\u0438\u043D\u0430\u043B (E)"
+  promptActive: "\u0422\u0435\u0440\u043C\u0438\u043D\u0430\u043B \u0430\u043A\u0442\u0438\u0432\u0438\u0440\u043E\u0432\u0430\u043D"
+  isActive: 0
+  onActivated:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!82 &1966270950502525764
 AudioSource:
   m_ObjectHideFlags: 0
@@ -151,6 +147,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 8300000, guid: 2c51ec2968545e54cb9be0c9134c8bd6, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1

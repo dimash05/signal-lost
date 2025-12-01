@@ -1,5 +1,6 @@
 public interface IInteractable
 {
-    string GetPrompt();
-    void Interact();
+    string Prompt { get; }
+
+    void Interact(PlayerInteractor interactor);
 }

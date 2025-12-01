@@ -51,5 +51,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "SignalLost.slnx"
+    "dotnet.defaultSolution": "signal-lost.slnx"
 }

@@ -1,70 +1,68 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using TMPro;
-using System.Collections;
 
 public class PlayerLifeSupport : MonoBehaviour
 {
-    [SerializeField] SuitConfigSO config;
-    [SerializeField] AudioSource breath;
+    [Header("Oxygen settings")]
+    [SerializeField] private float maxOxygenSeconds = 120f;
+    [SerializeField] private float oxygenDrainPerSecond = 1f;
+    [SerializeField] private bool startInside = false;
 
-    [Header("Death Screen")]
-    [SerializeField] CanvasGroup deathScreen;  
-    [SerializeField] TMP_Text   deathText;     
+    [Header("UI (optional)")]
+    [SerializeField] private Slider oxygenSlider;
+    [SerializeField] private TMP_Text oxygenText;
 
-    public bool IsInside { get; private set; } = true;
+    private float oxygen;
+    private bool isInside;
+    private bool isDead;
 
-    float o2;
-    bool dead;
+    public bool IsDead => isDead;
+    public float Oxygen01 => Mathf.Clamp01(oxygen / Mathf.Max(1f, maxOxygenSeconds));
 
-    void Start()
+    private void Awake()
     {
-        o2 = config ? config.maxO2 : 100f;
+        isInside = startInside;
+        oxygen   = maxOxygenSeconds;
         UpdateUI();
     }
 
-    public void SetInside(bool v) => IsInside = v;
-
-    void Update()
+    private void Update()
     {
-        if (dead || config == null) return;
+        if (isDead) return;
 
-        float delta = (IsInside ? config.rechargeInsidePerSec : -config.drainOutsidePerSec) * Time.deltaTime;
-        o2 = Mathf.Clamp(o2 + delta, 0f, config.maxO2);
-
-        if (breath)
+        if (!isInside && oxygenDrainPerSecond > 0f)
         {
-            float t = 1f - (o2 / config.maxO2);
-            breath.volume = Mathf.Lerp(0.05f, 0.3f, t);
-            breath.pitch  = Mathf.Lerp(1.0f, 0.9f,  t);
-        }
-
-        UpdateUI();
-
-        if (o2 <= 0f) StartCoroutine(DieAndRestart());
-    }
-
-    void UpdateUI() => UIController.Instance?.SetOxygen01(config ? o2 / config.maxO2 : 1f);
-
-    IEnumerator DieAndRestart()
-    {
-        dead = true;
-        var mv = GetComponent<PlayerMovement>(); if (mv) mv.enabled = false;
-        var ml = GetComponent<MouseLook>();      if (ml) ml.enabled = false;
-
-        if (deathScreen)
-        {
-            for (float t = 0; t < 1f; t += Time.deltaTime / 1.5f)
+            oxygen -= oxygenDrainPerSecond * Time.deltaTime;
+            if (oxygen <= 0f)
             {
-                deathScreen.alpha = t;
-                yield return null;
+                oxygen = 0f;
+                isDead = true;
+                UIController.Instance?.ShowDeathScreen();
             }
+            UpdateUI();
         }
+    }
 
-        if (deathText) deathText.text = "OXYGEN ENDED\nPress R for restart";
+    public void SetInside(bool value) => isInside = value;
 
-        while (!Input.GetKeyDown(KeyCode.R)) yield return null;
-        Time.timeScale = 1f;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    public void AddOxygen01(float seconds)
+    {
+        if (isDead || seconds <= 0f) return;
+        oxygen = Mathf.Clamp(oxygen + seconds, 0f, maxOxygenSeconds);
+        UpdateUI();
+    }
+
+    public void Refill()
+    {
+        if (isDead) return;
+        oxygen = maxOxygenSeconds;
+        UpdateUI();
+    }
+
+    private void UpdateUI()
+    {
+        if (oxygenSlider) oxygenSlider.value = Oxygen01;
+        if (oxygenText)   oxygenText.text = $"{Mathf.CeilToInt(oxygen)}s";
     }
 }

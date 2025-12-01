@@ -1,57 +1,42 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class ObjectiveManager : MonoBehaviour
 {
     public static ObjectiveManager Instance { get; private set; }
 
-    [Header("Goals")]
-    [SerializeField] private int totalTerminals = 3;
-    [SerializeField] private DoorAnimator[] doorsToOpen;
-    [SerializeField] private GameObject finalConsole;
+    [SerializeField] private List<Terminal> terminals = new List<Terminal>();
+    [SerializeField] private FinalConsole finalConsole;
 
-    private int activated;
+    public IReadOnlyList<Terminal> Terminals => terminals;
+    public bool AllTerminalsActive =>
+        terminals != null && terminals.Count > 0 && terminals.All(t => t && t.IsActivated);
 
-    public int TotalTerminals => totalTerminals;
-    public int Activated      => activated;
-    public bool Completed     => activated >= totalTerminals;
-
-    void Awake()
+    private void Awake()
     {
-        if (Instance != null && Instance != this) { Destroy(gameObject); return; }
+        if (Instance && Instance != this) { Destroy(this); return; }
         Instance = this;
 
-        if (finalConsole) finalConsole.SetActive(false);
-        UpdateUI();
+        if (terminals == null || terminals.Count == 0)
+            terminals = FindObjectsOfType<Terminal>(true).ToList();
+
+        if (!finalConsole)
+            finalConsole = FindObjectOfType<FinalConsole>(true);
+
+        UpdateState();
     }
 
-    public void OnTerminalActivated()
+    public void NotifyTerminalActivated(Terminal t) => UpdateState();
+
+    private void UpdateState()
     {
-        activated = Mathf.Clamp(activated + 1, 0, totalTerminals);
-        UpdateUI();
+        int done  = terminals.Count(t => t && t.IsActivated);
+        int total = terminals.Count(t => t);
 
-        if (Completed)
-        {
-            if (doorsToOpen != null)
-                foreach (var d in doorsToOpen) if (d) d.Open();
+        UIController.Instance?.SetObjectiveText($"Activate terminals: {done}/{total}");
 
-            if (finalConsole) finalConsole.SetActive(true);
-
-            UIController.Instance?.SetObjective("Get to antena and send the signal");
-        }
-    }
-
-    private void UpdateUI()
-    {
-        if (!Completed)
-            UIController.Instance?.SetObjective($"Activate terminals: {activated}/{totalTerminals}");
-    }
-
-    public void ResetProgress()
-    {
-        activated = 0;
-        UpdateUI();
-        if (finalConsole) finalConsole.SetActive(false);
-        if (doorsToOpen != null)
-            foreach (var d in doorsToOpen) if (d) d.Close();
+        if (finalConsole)
+            finalConsole.SetLocked(!AllTerminalsActive);
     }
 }
