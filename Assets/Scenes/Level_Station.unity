@@ -233,9 +233,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   flashlight: {fileID: 1433312033}
   toggleKey: 102
-  capacity: 150
-  drainPerSecond: 1
-  rechargePerSecond: 10
+  config: {fileID: 11400000, guid: 9aa9caf014079a54f995d8232f23629a, type: 2}
+  capacity: 100
+  drainPerSecond: 4
+  rechargePerSecond: 15
+  maxIntensity: 300
+  maxRange: 25
+  minIntensityFactor: 0.25
+  minRangeFactor: 0.3
+  spotAngle: 70
 --- !u!114 &10622483
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5178,8 +5184,8 @@ Light:
   serializedVersion: 11
   m_Type: 0
   m_Color: {r: 1, g: 0.900276, b: 0.495283, a: 1}
-  m_Intensity: 150
-  m_Range: 25
+  m_Intensity: 75
+  m_Range: 7.5000005
   m_SpotAngle: 70
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10

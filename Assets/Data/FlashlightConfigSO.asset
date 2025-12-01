@@ -12,9 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17c4c2a5e2351f645ac55291dafbbbc3, type: 3}
   m_Name: FlashlightConfigSO
   m_EditorClassIdentifier: 
-  maxEnergy: 100
+  capacity: 100
   drainPerSecond: 4
   rechargePerSecond: 15
   spotAngle: 70
-  range: 25
-  intensity: 150
+  maxRange: 25
+  maxIntensity: 300
+  minRangeFactor: 0.3
+  minIntensityFactor: 0.25
