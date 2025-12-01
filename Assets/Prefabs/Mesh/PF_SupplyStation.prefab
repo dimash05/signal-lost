@@ -9,7 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2357455728050918592}
+  - component: {fileID: 4998043347505345220}
   - component: {fileID: 7962172955581623310}
+  - component: {fileID: -8825299955370950271}
   m_Layer: 0
   m_Name: PF_SupplyStation
   m_TagString: Untagged
@@ -33,6 +35,27 @@ Transform:
   - {fileID: 6478523786601876064}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &4998043347505345220
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3213834548216809894}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &7962172955581623310
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -45,10 +68,43 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b05a9b5459f4e8240a0d97a30391615d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prompt: "\u0417\u0430\u0440\u044F\u0434\u0438\u0442\u044C (E)"
-  onRecharge:
-    m_PersistentCalls:
-      m_Calls: []
+  rechargeBattery: 1
+  rechargeOxygen: 1
+  batteryPerSecond: 15
+  oxygenPerSecond: 10
+  showPrompt: 1
+  requireHoldKey: 0
+  interactKey: 101
+  promptText: Recharge (E)
+  autoAddKinematicRigidbody: 1
+  logMessages: 0
+--- !u!54 &-8825299955370950271
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3213834548216809894}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &4080147160419586013
 GameObject:
   m_ObjectHideFlags: 0

@@ -3871,6 +3871,26 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 0.1703
       objectReference: {fileID: 0}
+    - target: {fileID: 2244831451650272755, guid: 63c259285f502cd4fb01a69eafcc072b,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 0.19
+      objectReference: {fileID: 0}
+    - target: {fileID: 2244831451650272755, guid: 63c259285f502cd4fb01a69eafcc072b,
+        type: 3}
+      propertyPath: m_Size.y
+      value: 0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2244831451650272755, guid: 63c259285f502cd4fb01a69eafcc072b,
+        type: 3}
+      propertyPath: m_Size.z
+      value: 0.19
+      objectReference: {fileID: 0}
+    - target: {fileID: 2244831451650272755, guid: 63c259285f502cd4fb01a69eafcc072b,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3339232779916321795, guid: 63c259285f502cd4fb01a69eafcc072b,
         type: 3}
       propertyPath: m_Size.y
@@ -4679,10 +4699,30 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 0.1849
       objectReference: {fileID: 0}
+    - target: {fileID: 6613816618622203732, guid: 2d1150cec34653c43bbd51334fea42bc,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 0.19
+      objectReference: {fileID: 0}
+    - target: {fileID: 6613816618622203732, guid: 2d1150cec34653c43bbd51334fea42bc,
+        type: 3}
+      propertyPath: m_Size.y
+      value: 0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 6613816618622203732, guid: 2d1150cec34653c43bbd51334fea42bc,
+        type: 3}
+      propertyPath: m_Size.z
+      value: 0.19
+      objectReference: {fileID: 0}
     - target: {fileID: 7690063381858926244, guid: 2d1150cec34653c43bbd51334fea42bc,
         type: 3}
       propertyPath: m_Size.y
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8136650769864092062, guid: 2d1150cec34653c43bbd51334fea42bc,
+        type: 3}
+      propertyPath: rechargeOxygen
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5459,13 +5499,14 @@ GameObject:
   - component: {fileID: 1521383249}
   - component: {fileID: 1521383248}
   - component: {fileID: 1521383247}
+  - component: {fileID: 1521383250}
   m_Layer: 5
   m_Name: TutorialToast
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1521383246
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5481,11 +5522,11 @@ RectTransform:
   - {fileID: 2083539608}
   m_Father: {fileID: 1311900542}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: -752.7, y: 467.91}
+  m_SizeDelta: {x: 800, y: 100}
+  m_Pivot: {x: 0.5, y: 0}
 --- !u!225 &1521383247
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -5511,7 +5552,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.23529412}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -5536,6 +5577,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1521383245}
   m_CullTransparentMesh: 1
+--- !u!114 &1521383250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1521383245}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40eecc174ab6733459a56b210824db14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  group: {fileID: 1521383247}
+  label: {fileID: 2083539609}
+  fadeIn: 0.18
+  hold: 2.2
+  fadeOut: 0.22
+  queueMessages: 1
 --- !u!1 &1544425352
 GameObject:
   m_ObjectHideFlags: 0
@@ -5546,6 +5605,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1544425353}
   - component: {fileID: 1544425354}
+  - component: {fileID: 1544425355}
   m_Layer: 0
   m_Name: TutorialDirector
   m_TagString: Untagged
@@ -5580,6 +5640,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbecb636a351517409be00155e5503b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1544425355
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1544425352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac82c37ba9b2fc643b2b6fb4ed773162, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  showOnStart: 1
 --- !u!1001 &1551205447
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6531,10 +6604,30 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6787631183579387804, guid: 9f22b9d840bc37846bc79e7b2f2fc12b,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 0.19
+      objectReference: {fileID: 0}
+    - target: {fileID: 6787631183579387804, guid: 9f22b9d840bc37846bc79e7b2f2fc12b,
+        type: 3}
+      propertyPath: m_Size.y
+      value: 0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 6787631183579387804, guid: 9f22b9d840bc37846bc79e7b2f2fc12b,
+        type: 3}
+      propertyPath: m_Size.z
+      value: 0.19
+      objectReference: {fileID: 0}
     - target: {fileID: 8017227932749569644, guid: 9f22b9d840bc37846bc79e7b2f2fc12b,
         type: 3}
       propertyPath: m_Size.y
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8435608750105577814, guid: 9f22b9d840bc37846bc79e7b2f2fc12b,
+        type: 3}
+      propertyPath: rechargeBattery
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -7328,6 +7421,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: PF_SupplyStation_Dead
       objectReference: {fileID: 0}
+    - target: {fileID: 4892566096238820730, guid: 1ef6dd8891c17d244a9629a6f82ac285,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 0.19
+      objectReference: {fileID: 0}
+    - target: {fileID: 4892566096238820730, guid: 1ef6dd8891c17d244a9629a6f82ac285,
+        type: 3}
+      propertyPath: m_Size.y
+      value: 0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4892566096238820730, guid: 1ef6dd8891c17d244a9629a6f82ac285,
+        type: 3}
+      propertyPath: m_Size.z
+      value: 0.19
+      objectReference: {fileID: 0}
     - target: {fileID: 6868314955820729822, guid: 1ef6dd8891c17d244a9629a6f82ac285,
         type: 3}
       propertyPath: m_LocalPosition.y
@@ -7337,6 +7445,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_ConstrainProportionsScale
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7549771436295611312, guid: 1ef6dd8891c17d244a9629a6f82ac285,
+        type: 3}
+      propertyPath: rechargeOxygen
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7549771436295611312, guid: 1ef6dd8891c17d244a9629a6f82ac285,
+        type: 3}
+      propertyPath: rechargeBattery
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8256657481939465354, guid: 1ef6dd8891c17d244a9629a6f82ac285,
         type: 3}
@@ -7726,7 +7844,7 @@ GameObject:
   - component: {fileID: 2083539610}
   - component: {fileID: 2083539609}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: lable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7748,8 +7866,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: 203.8, y: -56.41}
+  m_SizeDelta: {x: 800, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2083539609
 MonoBehaviour:

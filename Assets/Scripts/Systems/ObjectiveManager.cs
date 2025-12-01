@@ -13,6 +13,8 @@ public class ObjectiveManager : MonoBehaviour
     public bool AllTerminalsActive =>
         terminals != null && terminals.Count > 0 && terminals.All(t => t && t.IsActivated);
 
+    bool _wasAllActive = false;
+
     private void Awake()
     {
         if (Instance && Instance != this) { Destroy(this); return; }
@@ -24,19 +26,35 @@ public class ObjectiveManager : MonoBehaviour
         if (!finalConsole)
             finalConsole = FindObjectOfType<FinalConsole>(true);
 
-        UpdateState();
+        UpdateState(initial:true);
     }
 
-    public void NotifyTerminalActivated(Terminal t) => UpdateState();
+    public void NotifyTerminalActivated(Terminal t)
+    {
+        UpdateState(initial:false);
+    }
 
-    private void UpdateState()
+    private void UpdateState(bool initial)
     {
         int done  = terminals.Count(t => t && t.IsActivated);
         int total = terminals.Count(t => t);
-
         UIController.Instance?.SetObjectiveText($"Activate terminals: {done}/{total}");
 
+        bool allNow = AllTerminalsActive;
+
         if (finalConsole)
-            finalConsole.SetLocked(!AllTerminalsActive);
+            finalConsole.SetLocked(!allNow);
+
+        if (!initial)
+        {
+            ToastUI.Show($"Terminal activated ({done}/{total}).", 2.0f);
+        }
+
+        if (!_wasAllActive && allNow)
+        {
+            ToastUI.Show("All terminals are active. Send SOS at the final console.", 3.0f);
+        }
+
+        _wasAllActive = allNow;
     }
 }

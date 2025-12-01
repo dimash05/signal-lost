@@ -17,6 +17,8 @@ public class PlayerLifeSupport : MonoBehaviour
     private bool isInside;
     private bool isDead;
 
+    bool lowOxyToastShown = false;
+
     public bool IsDead => isDead;
     public float Oxygen01 => Mathf.Clamp01(oxygen / Mathf.Max(1f, maxOxygenSeconds));
 
@@ -24,7 +26,7 @@ public class PlayerLifeSupport : MonoBehaviour
     {
         isInside = startInside;
         oxygen   = maxOxygenSeconds;
-        UpdateUI();
+        PushUI();
     }
 
     private void Update()
@@ -33,36 +35,49 @@ public class PlayerLifeSupport : MonoBehaviour
 
         if (!isInside && oxygenDrainPerSecond > 0f)
         {
-            oxygen -= oxygenDrainPerSecond * Time.deltaTime;
+            oxygen = Mathf.Max(0f, oxygen - oxygenDrainPerSecond * Time.deltaTime);
+
+            if (!lowOxyToastShown && Oxygen01 <= 0.30f)
+            {
+                lowOxyToastShown = true;
+                ToastUI.ShowOnce("low_oxy", "Oxygen low — reach a charging station!", 2.6f);
+            }
+
             if (oxygen <= 0f)
             {
-                oxygen = 0f;
                 isDead = true;
                 UIController.Instance?.ShowDeathScreen();
+                ToastUI.Show("You ran out of oxygen.", 2.0f);
             }
-            UpdateUI();
+
+            PushUI();
         }
     }
 
     public void SetInside(bool value) => isInside = value;
 
-    public void AddOxygen01(float seconds)
+    public void AddOxygenSeconds(float seconds)
     {
         if (isDead || seconds <= 0f) return;
         oxygen = Mathf.Clamp(oxygen + seconds, 0f, maxOxygenSeconds);
-        UpdateUI();
+        PushUI();
     }
+
+    public void AddOxygen01(float seconds) => AddOxygenSeconds(seconds);
 
     public void Refill()
     {
         if (isDead) return;
         oxygen = maxOxygenSeconds;
-        UpdateUI();
+        PushUI();
     }
 
-    private void UpdateUI()
+    private void PushUI()
     {
+        if (UIController.Instance)
+            UIController.Instance.SetOxygenSeconds(oxygen, maxOxygenSeconds);
+
         if (oxygenSlider) oxygenSlider.value = Oxygen01;
-        if (oxygenText)   oxygenText.text = $"{Mathf.CeilToInt(oxygen)}s";
+        if (oxygenText)   oxygenText.text   = $"{Mathf.CeilToInt(oxygen)}s";
     }
 }
